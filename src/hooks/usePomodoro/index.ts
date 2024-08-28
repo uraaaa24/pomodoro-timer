@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
 
+/**
+ * Custom hook to manage a pomodoro timer
+ *
+ * @param initialWorkTime
+ * @param initialBreakTime
+ */
 export const usePomodoro = (initialWorkTime: number, initialBreakTime: number) => {
   const [workTime] = useState(initialWorkTime)
   const [breakTime] = useState(initialBreakTime)
