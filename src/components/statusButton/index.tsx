@@ -1,9 +1,7 @@
-import { PomodoroStatus } from '@/constant'
-import { getStatusColor } from '@/utils'
-
 type PomodoroButtonProps = {
   onClick: () => void
-  status: PomodoroStatus
+  label: string
+  className?: string
 }
 
 /**
@@ -12,15 +10,13 @@ type PomodoroButtonProps = {
  * @param onClick - The function to call when the button is clicked
  * @param status - The status of the button
  */
-const PomodoroButton = ({ onClick, status }: PomodoroButtonProps) => {
-  const textColor = getStatusColor(status)
-
+const PomodoroButton = ({ onClick, label, className }: PomodoroButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className={`bg-white ${textColor} font-semibold py-2 px-6 rounded-full shadow-lg transform transition-transform hover:scale-105`}
+      className={`bg-white font-semibold py-2 px-6 rounded-full shadow-lg transform transition-transform hover:scale-105 ${className}`}
     >
-      {status}
+      {label}
     </button>
   )
 }
