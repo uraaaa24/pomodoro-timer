@@ -6,7 +6,7 @@ type StartButtonProps = {
 }
 
 const StartButton = ({ onClick }: StartButtonProps) => {
-  return <PomodoroButton onClick={onClick} label={PomodoroStatus.START} className="text-green-500" />
+  return <PomodoroButton onClick={onClick} label={PomodoroStatus.START} className="text-blue-500" />
 }
 
 export default StartButton
