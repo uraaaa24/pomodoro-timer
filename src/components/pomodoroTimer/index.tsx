@@ -1,6 +1,7 @@
 'use client'
 
-import { BreakTime, WorkTime } from '@/constant'
+import PomodoroButton from '@/components/statusButton'
+import { BreakTime, PomodoroStatus, WorkTime } from '@/constant'
 import { usePomodoro } from '@/hooks/usePomodoro'
 
 /**
@@ -17,26 +18,11 @@ const PomodoroTimer = () => {
       <div className="mb-4 text-xl">Pomodoros Completed: {pomodoroCount}</div>
       <div className="space-x-4">
         {isActive ? (
-          <button
-            onClick={stop}
-            className="bg-white text-red-500 font-semibold py-2 px-6 rounded-full shadow-lg transform transition-transform hover:scale-105"
-          >
-            Stop
-          </button>
+          <PomodoroButton onClick={stop} status={PomodoroStatus.STOP} />
         ) : (
-          <button
-            onClick={start}
-            className="bg-white text-blue-500 font-semibold py-2 px-6 rounded-full shadow-lg transform transition-transform hover:scale-105"
-          >
-            Start
-          </button>
+          <PomodoroButton onClick={start} status={PomodoroStatus.START} />
         )}
-        <button
-          onClick={reset}
-          className="bg-white text-gray-500 font-semibold py-2 px-6 rounded-full shadow-lg transform transition-transform hover:scale-105"
-        >
-          Reset
-        </button>
+        <PomodoroButton onClick={reset} status={PomodoroStatus.RESET} />
       </div>
     </div>
   )
