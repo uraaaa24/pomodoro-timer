@@ -10,7 +10,7 @@ const PomodoroTimer = () => {
   const { minutes, seconds, pomodoroCount, isActive, start, stop, reset } = usePomodoro(WorkTime, BreakTime)
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center mx-auto">
       <div className="text-7xl font-bold mb-8 tracking-wide">
         {minutes}:{seconds}
       </div>
