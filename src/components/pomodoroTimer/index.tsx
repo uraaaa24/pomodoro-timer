@@ -1,59 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { BreakTime, WorkTime } from '@/constant'
+import { usePomodoro } from '@/hooks/usePomodoro'
 
 /**
  * A simple Pomodoro Timer
  */
 const PomodoroTimer = () => {
-  const [workTime] = useState(25 * 60)
-  const [breakTime] = useState(5 * 60)
-  const [pomodoroCount, setPomodoroCount] = useState(0)
-  const [timeLeft, setTimeLeft] = useState(workTime)
-  const [isActive, setIsActive] = useState(false)
-  const [isWorkSession, setIsWorkSession] = useState(true)
-
-  useEffect(() => {
-    let timerId: NodeJS.Timeout | undefined
-    if (isActive && timeLeft > 0) {
-      timerId = setInterval(() => {
-        setTimeLeft((timeLeft) => timeLeft - 1)
-      }, 1000)
-    } else if (timeLeft === 0) {
-      clearInterval(timerId)
-
-      if (isWorkSession) {
-        setPomodoroCount((count) => count + 1)
-        setTimeLeft(breakTime)
-      } else {
-        setTimeLeft(workTime)
-      }
-
-      setIsWorkSession(!isWorkSession)
-    }
-
-    return () => clearInterval(timerId)
-  }, [isActive, timeLeft, workTime, breakTime, isWorkSession])
-
-  const start = () => {
-    if (!isActive) {
-      setIsActive(true)
-    }
-  }
-
-  const stop = () => {
-    setIsActive(false)
-  }
-
-  const reset = () => {
-    setIsActive(false)
-    setIsWorkSession(true)
-    setTimeLeft(workTime)
-    setPomodoroCount(0)
-  }
-
-  const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0')
-  const seconds = String(timeLeft % 60).padStart(2, '0')
+  const { minutes, seconds, pomodoroCount, isActive, start, stop, reset } = usePomodoro(WorkTime, BreakTime)
 
   return (
     <div className="flex flex-col items-center">
