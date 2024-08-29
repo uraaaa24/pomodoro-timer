@@ -1,8 +1,8 @@
 'use client'
 
-import ResetButton from '@/components/statusButton/resetButton'
-import StartButton from '@/components/statusButton/startButton'
-import StopButton from '@/components/statusButton/stopButton'
+import ResetButton from '@/components/button/statusButton/resetButton'
+import StartButton from '@/components/button/statusButton/startButton'
+import StopButton from '@/components/button/statusButton/stopButton'
 import { BreakTime, WorkTime } from '@/constant'
 import { usePomodoro } from '@/hooks/usePomodoro'
 
