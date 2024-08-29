@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+const DefaultVolume = 0.4
 
 /**
  * Custom hook to manage a pomodoro timer
@@ -13,6 +15,14 @@ export const usePomodoro = (initialWorkTime: number, initialBreakTime: number) =
   const [timeLeft, setTimeLeft] = useState(workTime)
   const [isActive, setIsActive] = useState(false)
   const [isWorkSession, setIsWorkSession] = useState(true)
+
+  const isFirstStart = useRef(true)
+
+  const playSound = () => {
+    const audio = new Audio('/sounds/schoolBell.mp3')
+    audio.volume = DefaultVolume
+    audio.play()
+  }
 
   useEffect(() => {
     let timerId: NodeJS.Timeout | undefined
@@ -31,6 +41,7 @@ export const usePomodoro = (initialWorkTime: number, initialBreakTime: number) =
       }
 
       setIsWorkSession(!isWorkSession)
+      playSound()
     }
 
     return () => clearInterval(timerId)
@@ -39,6 +50,11 @@ export const usePomodoro = (initialWorkTime: number, initialBreakTime: number) =
   const start = () => {
     if (!isActive) {
       setIsActive(true)
+
+      if (isFirstStart.current) {
+        playSound()
+        isFirstStart.current = false
+      }
     }
   }
 
@@ -51,6 +67,7 @@ export const usePomodoro = (initialWorkTime: number, initialBreakTime: number) =
     setIsWorkSession(true)
     setTimeLeft(workTime)
     setPomodoroCount(0)
+    isFirstStart.current = true
   }
 
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0')
