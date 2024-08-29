@@ -17,11 +17,24 @@ export const usePomodoro = (initialWorkTime: number, initialBreakTime: number) =
   const [isWorkSession, setIsWorkSession] = useState(true)
 
   const isFirstStart = useRef(true)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  useEffect(() => {
+    audioRef.current = new Audio('/sounds/schoolBell.mp3')
+    audioRef.current.volume = DefaultVolume
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+    }
+  }, [])
 
   const playSound = () => {
-    const audio = new Audio('/sounds/schoolBell.mp3')
-    audio.volume = DefaultVolume
-    audio.play()
+    if (audioRef.current) {
+      audioRef.current.play()
+    }
   }
 
   useEffect(() => {
@@ -63,6 +76,11 @@ export const usePomodoro = (initialWorkTime: number, initialBreakTime: number) =
   }
 
   const reset = () => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+    }
+
     setIsActive(false)
     setIsWorkSession(true)
     setTimeLeft(workTime)
