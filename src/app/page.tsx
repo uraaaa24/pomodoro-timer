@@ -8,7 +8,6 @@ export default function Home() {
     <div className="flex flex-col justify-center h-screen bg-gradient-to-br from-blue-500 to-blue-400 text-white">
       <div className="absolute top-0 right-0 p-6">
         <div className="flex gap-2 items-center">
-          {/* webの場合は表示する、iosやandroidの場合は表示しない */}
           <div className="hidden md:block">
             <MaximizeButton />
           </div>

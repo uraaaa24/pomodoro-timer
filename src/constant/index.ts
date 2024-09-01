@@ -7,3 +7,8 @@ export const PomodoroStatus = {
   RESET: 'Reset'
 } as const
 export type PomodoroStatus = (typeof PomodoroStatus)[keyof typeof PomodoroStatus]
+
+export const PomodoroWorkerStatus = {
+  TICK: 'TICK',
+  COMPLETE: 'COMPLETE'
+} as const

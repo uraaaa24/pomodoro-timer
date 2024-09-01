@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { PomodoroStatus, PomodoroWorkerStatus } from '@/constant'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 const DefaultVolume = 0.4
 
@@ -18,24 +19,63 @@ export const usePomodoro = (initialWorkTime: number, initialBreakTime: number) =
 
   const isFirstStart = useRef(true)
   const audioRef = useRef<HTMLAudioElement | null>(null)
-
-  useEffect(() => {
-    audioRef.current = new Audio('/sounds/schoolBell.mp3')
-    audioRef.current.volume = DefaultVolume
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current = null
-      }
-    }
-  }, [])
+  const workerRef = useRef<Worker | null>(null)
 
   const playSound = () => {
     if (audioRef.current) {
       audioRef.current.play()
     }
   }
+
+  const handleTimerComplete = useCallback(() => {
+    if (isWorkSession) {
+      setPomodoroCount((count) => count + 1)
+      setTimeLeft(breakTime)
+    } else {
+      setTimeLeft(workTime)
+    }
+
+    setIsWorkSession(!isWorkSession)
+    playSound()
+
+    if (workerRef.current) {
+      workerRef.current.postMessage({
+        type: PomodoroStatus.START,
+        payload: { timeLeft: isWorkSession ? breakTime : workTime }
+      })
+    }
+  }, [breakTime, isWorkSession, workTime])
+
+  useEffect(() => {
+    audioRef.current = new Audio('/sounds/schoolBell.mp3')
+    audioRef.current.volume = DefaultVolume
+
+    workerRef.current = new Worker(new URL('../../lib/worker.ts', import.meta.url))
+
+    workerRef.current.addEventListener('message', (event) => {
+      const { type, payload } = event.data
+
+      switch (type) {
+        case PomodoroWorkerStatus.TICK:
+          setTimeLeft(payload.timeLeft)
+          break
+        case PomodoroWorkerStatus.COMPLETE:
+          handleTimerComplete()
+          break
+      }
+    })
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+
+      if (workerRef.current) {
+        workerRef.current.terminate()
+      }
+    }
+  }, [handleTimerComplete])
 
   useEffect(() => {
     let timerId: NodeJS.Timeout | undefined
@@ -68,11 +108,18 @@ export const usePomodoro = (initialWorkTime: number, initialBreakTime: number) =
         playSound()
         isFirstStart.current = false
       }
+
+      if (workerRef.current) {
+        workerRef.current.postMessage({ type: PomodoroStatus.START, payload: { timeLeft } })
+      }
     }
   }
 
   const stop = () => {
     setIsActive(false)
+    if (workerRef.current) {
+      workerRef.current.postMessage({ type: PomodoroStatus.STOP })
+    }
   }
 
   const reset = () => {
@@ -86,6 +133,10 @@ export const usePomodoro = (initialWorkTime: number, initialBreakTime: number) =
     setTimeLeft(workTime)
     setPomodoroCount(0)
     isFirstStart.current = true
+
+    if (workerRef.current) {
+      workerRef.current.postMessage({ type: PomodoroStatus.RESET, payload: { timeLeft: workTime } })
+    }
   }
 
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0')
