@@ -77,29 +77,6 @@ export const usePomodoro = (initialWorkTime: number, initialBreakTime: number) =
     }
   }, [handleTimerComplete])
 
-  useEffect(() => {
-    let timerId: NodeJS.Timeout | undefined
-    if (isActive && timeLeft > 0) {
-      timerId = setInterval(() => {
-        setTimeLeft((timeLeft) => timeLeft - 1)
-      }, 1000)
-    } else if (timeLeft === 0) {
-      clearInterval(timerId)
-
-      if (isWorkSession) {
-        setPomodoroCount((count) => count + 1)
-        setTimeLeft(breakTime)
-      } else {
-        setTimeLeft(workTime)
-      }
-
-      setIsWorkSession(!isWorkSession)
-      playSound()
-    }
-
-    return () => clearInterval(timerId)
-  }, [isActive, timeLeft, workTime, breakTime, isWorkSession])
-
   const start = () => {
     if (!isActive) {
       setIsActive(true)

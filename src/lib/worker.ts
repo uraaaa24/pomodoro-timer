@@ -1,5 +1,7 @@
 import { PomodoroStatus } from '@/constant'
 
+const TICK_INTERVAL = 1000 // 1 second
+
 let timer: number | null = null
 let timeLeft = 0
 
@@ -20,7 +22,7 @@ self.addEventListener('message', (event) => {
             timer = null
             self.postMessage({ type: 'COMPLETE' })
           }
-        }, 1000)
+        }, TICK_INTERVAL)
       }
       break
 
