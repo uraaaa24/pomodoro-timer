@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 
 const DefaultVolume = 0.4
 
+// TODO: Web Workerを使ってタイマーを実装する
+
 /**
  * Custom hook to manage a pomodoro timer
  *
