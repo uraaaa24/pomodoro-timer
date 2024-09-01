@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 const DefaultVolume = 0.4
 
+// TODO: リファクタリングする
+
 /**
  * Custom hook to manage a pomodoro timer
  *
